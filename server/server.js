@@ -25,7 +25,7 @@ app.use(
 // DB connect
 connectDB();
 
-// Routes
+// Route's
 app.use("/auth", authRoutes);
 app.use("/api", userRoutes);
 
