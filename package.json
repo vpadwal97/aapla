@@ -1,4 +1,16 @@
 {
+  "name": "invetory-management",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "keywords": [],
+  "author": "Vishu",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
@@ -7,5 +19,8 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
