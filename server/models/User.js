@@ -2,21 +2,15 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    firebaseUid: {
       type: String,
       required: true,
       unique: true,
     },
-
-    password: {
-      type: String,
-      required: true,
-    },
-
-    refreshTokens: {
-      type: [String],
-      default: [],
-    },
+    email: String,
+    name: String,
+    photoURL: String,
+    provider: String,
   },
   { timestamps: true }
 );
