@@ -12,17 +12,33 @@ const router = express.Router();
 
 // REGISTER
 router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password, userType } = req.body;
+    if (!username || !password || !userType) {
+      // throw new Error("All fields are require");
+      return res.status(401).json({
+        message: "Please fill al the required fields",
+      });
+    }
 
-  const hashed = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
-    username,
-    password: hashed,
-    refreshTokens: [],
-  });
+    const user = await User.create({
+      username,
+      password: hashed,
+      userType,
+      refreshTokens: [],
+    });
 
-  res.json({ message: "User created", userId: user._id });
+    res.json({ message: "User created", userId: user._id });
+  } catch (error) {
+    console.error(error); // log for debugging
+
+    res.status(500).json({
+      message: "Something went wrong",
+      error: error.message, // optional (avoid exposing sensitive info in production)
+    });
+  }
 });
 
 // LOGIN
@@ -35,7 +51,11 @@ router.post("/login", async (req, res) => {
   const match = await bcrypt.compare(password, user.password);
   if (!match) return res.status(401).json({ message: "Wrong password" });
 
-  const payload = { id: user._id, username: user.username };
+  const payload = {
+    id: user._id,
+    username: user.username,
+    userType: user.userType,
+  };
 
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
@@ -49,7 +69,7 @@ router.post("/login", async (req, res) => {
     sameSite: "strict",
   });
 
-  res.json({ accessToken });
+  res.json({ accessToken, userType: user.userType });
 });
 
 // REFRESH TOKEN
@@ -66,11 +86,13 @@ router.post("/refresh", async (req, res) => {
     const newAccessToken = generateAccessToken({
       id: data.id,
       username: data.username,
+      userType: data.userType,
     });
 
     const newRefreshToken = generateRefreshToken({
       id: data.id,
       username: data.username,
+      userType: data.userType,
     });
 
     user.refreshTokens = user.refreshTokens.filter((t) => t !== token);
@@ -100,7 +122,13 @@ router.post("/logout", async (req, res) => {
   }
 
   res.clearCookie("refreshToken");
-  res.sendStatus(204);
+  // res.sendStatus(200).json({
+  //   message: "Logged out successfully"
+  // });
+  res.status(200).json({
+    message: "Logged out successfully"
+  });
 });
+
 
 module.exports = router;
