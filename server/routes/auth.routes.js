@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: false,
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   res.json({ accessToken, userType: user.userType });
@@ -75,6 +75,7 @@ router.post("/login", async (req, res) => {
 // REFRESH TOKEN
 router.post("/refresh", async (req, res) => {
   const token = req.cookies.refreshToken;
+  console.log("token is there", token);
   if (!token) return res.sendStatus(401);
 
   const user = await User.findOne({ refreshTokens: token });
@@ -102,7 +103,7 @@ router.post("/refresh", async (req, res) => {
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "none",
     });
 
     res.json({ accessToken: newAccessToken });
@@ -126,9 +127,8 @@ router.post("/logout", async (req, res) => {
   //   message: "Logged out successfully"
   // });
   res.status(200).json({
-    message: "Logged out successfully"
+    message: "Logged out successfully",
   });
 });
-
 
 module.exports = router;

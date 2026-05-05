@@ -18,7 +18,8 @@ app.use(cookieParser());
 app.use(
   cors({
     // origin: "http://localhost:3000",
-    origin: /\.csb\.app$/,
+    // origin: /\.csb\.app$/,
+    origin: "https://2zst6t-5173.csb.app",
     credentials: true,
   })
 );
